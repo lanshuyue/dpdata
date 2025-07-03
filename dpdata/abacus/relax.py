@@ -42,7 +42,7 @@ def get_coords_from_log(loglines, natoms):
     """
     natoms_log = 0
     for line in loglines:
-        if line[13:41] == "number of atom for this type":
+        if line[12:41] == "Number of atoms for this type":
             natoms_log += int(line.split()[-1])
 
     assert natoms_log > 0 and natoms_log == natoms, (
@@ -56,7 +56,7 @@ def get_coords_from_log(loglines, natoms):
 
     for i in range(len(loglines)):
         line = loglines[i]
-        if line[18:41] == "lattice constant (Bohr)":
+        if line[18:41] == "Lattice constant (Bohr)":
             a0 = float(line.split()[-1])
         elif len(loglines[i].split()) >= 2 and loglines[i].split()[1] == "COORDINATES":
             # read coordinate information
@@ -66,7 +66,7 @@ def get_coords_from_log(loglines, natoms):
                 coord_direct.append(True)
                 for k in range(2, 2 + natoms):
                     coords[-1].append(
-                        list(map(lambda x: float(x), loglines[i + k].split()[1:4]))
+                        list(map(lambda x: float(x), loglines[i + k].split()[1:4])) 
                     )
             elif loglines[i].split()[0] == "CARTESIAN":
                 coord_direct.append(False)
@@ -94,7 +94,7 @@ def get_coords_from_log(loglines, natoms):
                     list(map(lambda x: float(x) * a0, loglines[i + k].split()[0:3]))
                 )
 
-        elif line[1:14] == "final etot is":
+        elif line[1:15] == "#TOTAL ENERGY#":
             # add the energy for previous structures whose SCF is not converged
             while len(energy) < len(coords) - 1:
                 energy.append(np.nan)
