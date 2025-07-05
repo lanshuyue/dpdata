@@ -44,15 +44,12 @@ def get_path_out(fname, inlines):
 
 def get_energy(outlines):
     Etot = None
-    for line in reversed(outlines):
-        if "final etot is" in line:
+    for line in outlines:    
+        if "SCF IS NOT CONVERGED" in line:
+            return Etot, False
+        elif "FINAL_ETOT_IS" in line:
             Etot = float(line.split()[-2])  # in eV
             return Etot, True
-        elif "convergence has NOT been achieved!" in line:
-            return Etot, False
-        elif "convergence has not been achieved" in line:
-            return Etot, False
-
     return Etot, False
 
 
@@ -211,7 +208,7 @@ def get_frame(fname):
         outlines = fp.read().split("\n")
 
     # get energy
-    energy, converge = get_energy(outlines)
+    energy, converge = get_energy(outlines) 
     if not converge:
         return data
 
